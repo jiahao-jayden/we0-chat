@@ -1,18 +1,19 @@
-import { type IpcMain, type BrowserWindow } from 'electron'
+import { type BrowserWindow } from 'electron'
 import logger from '~/lib/logger'
-import { MessageService } from '../services/message-service'
+import { SettingsService } from '../services/db/settings-servise'
 
-let messageService: MessageService | null = null
+let settingsService: SettingsService | null = null
 
-export function registerIpc(ipcMain: IpcMain, mainWindow: BrowserWindow) {
+export function registerIpc(mainWindow: BrowserWindow) {
   logger.info('registerIpc')
-  messageService = MessageService.getInstance(mainWindow)
-  messageService.init()
+  settingsService = new SettingsService(mainWindow)
+  // 初始化 db:settings 数据
+  settingsService.init()
 }
 
 export async function cleanupIpc() {
-  if (messageService) {
-    await messageService.cleanup()
-    messageService = null
+  if (settingsService) {
+    await settingsService.cleanup()
+    settingsService = null
   }
 }

@@ -50,7 +50,10 @@ export default function SettingsScreen() {
   return (
     <div className="flex h-full">
       {/* sidebar */}
-      <div className="bg-sidebar h-full flex  flex-col pl-4 pr-2" style={{ width: SIDEBAR_WIDTH }}>
+      <div
+        className="flex flex-col h-full pl-4 pr-2 border-r bg-sidebar"
+        style={{ width: SIDEBAR_WIDTH }}
+      >
         {SETTINGS_ITEMS.map((item) => (
           <ItemButton key={item.id} id={item.id} onClick={() => setSelectedItem(item.id)}>
             {item.icon}

@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/form'
 import { PROVIDERS } from '@/constant/providers'
 import { cn } from '@/lib/utils'
-import { LLMProvider } from '@/types/provider'
+import type { LLMProvider } from '~/shared/types/provider'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { OpenAI } from '@lobehub/icons'
 import { ChevronDown, ChevronRight, Link, Plus, PlusCircle, Settings2 } from 'lucide-react'
@@ -207,6 +207,8 @@ export function SettingsPanel() {
   const providerList = Object.values(PROVIDERS)
   return (
     <div className="space-y-8 text-sm">
+      <div className="w-[160px] h-20 bg-amber-500"></div>
+      <div className="h-20 bg-amber-500" style={{ width: '160px' }}></div>
       {/* 用户的配置 */}
       <div className="space-y-2">
         <p className="text-sm font-bold">Providers</p>

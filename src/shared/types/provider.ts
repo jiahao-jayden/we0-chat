@@ -7,6 +7,13 @@ export type LLMProvider = {
   logo: React.ReactNode
   modelUrl: string
   features: string[]
+  models: ProviderModel[]
+}
+
+export type ProviderModel = {
+  name: string
+  iconId: string
+  description?: string
 }
 
 export type ProviderId = 'openrouter' | 'silicon'

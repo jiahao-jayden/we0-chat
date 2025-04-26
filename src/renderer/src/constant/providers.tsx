@@ -1,4 +1,4 @@
-import type { LLMProvider } from '@/types/provider'
+import type { LLMProvider } from '~/shared/types/provider'
 import { OpenRouter, SiliconCloud } from '@lobehub/icons'
 export const PROVIDERS: Record<string, LLMProvider> = {
   openrouter: {

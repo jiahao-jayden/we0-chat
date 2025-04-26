@@ -6,7 +6,6 @@ import { registerRoute } from '../lib/electron-router-dom'
 import { registerIpc, cleanupIpc } from './register/ipc'
 
 async function createWindow(): Promise<void> {
-  // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 980,
     height: 670,
@@ -60,7 +59,7 @@ async function createWindow(): Promise<void> {
   // koaServer = await registerKoa()
 
   // 注册 ipc
-  registerIpc(ipcMain, mainWindow)
+  registerIpc(mainWindow)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
