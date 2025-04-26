@@ -1,0 +1,36 @@
+这个项目是一个 electron 的项目
+
+layout 结构如下：
+import { Outlet } from 'react-router-dom'
+import { AppSidebar } from './components/app-sidebar'
+import Titlebar from './components/Titlebar'
+import { SidebarProvider } from './components/ui/sidebar'
+
+export function Layout(): React.ReactElement {
+  return (
+    <div className="overflow-hidden">
+      <SidebarProvider className="!bg-transparent">
+        <Titlebar />
+        <AppSidebar />
+        <main className="!bg-transparent pt-8">
+          <Outlet />
+        </main>
+      </SidebarProvider>
+    </div>
+  )
+}
+
+在生成代码的时候需要注意这个 Titlebar，因为这个是一个 fixed布局，有一些定位或者其他的会受到影响：
+import { SidebarTrigger } from '../ui/sidebar'
+
+export default function Titlebar() {
+  return (
+    <header
+      id="titlebar"
+      className="fixed top-0 flex flex-1 h-9 items-center w-full bg-sidebar z-50 border-b border-border"
+    >
+      <SidebarTrigger className="ml-18 relative z-[999] cursor-pointer" />
+      <div className="can-drag h-9 w-full" />
+    </header>
+  )
+}

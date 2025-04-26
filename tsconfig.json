@@ -1,0 +1,19 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "@/*": [
+        "src/renderer/src/*"
+      ],
+      "~/*": [
+        "src/*"
+      ]
+    }
+  },
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }]
+}
