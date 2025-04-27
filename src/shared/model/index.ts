@@ -21,10 +21,6 @@ export class SettingModel {
   @Column({ type: 'int', nullable: false, default: DATABASE_VERSION })
   version: number
 
-  // 与提供商配置的一对多关系
-  @Column({ type: 'simple-array', nullable: false })
-  providerConfig: string[]
-
   // 语言设置：中文或英文
   @Column({ type: 'simple-enum', enum: ['zh', 'en'], nullable: false })
   language: Language
@@ -40,11 +36,10 @@ export class SettingModel {
    * @param language 语言设置
    * @param theme 主题设置
    */
-  constructor(configName: string, providerConfig: string[], language: Language, theme: Theme) {
+  constructor(configName: string, language: Language, theme: Theme) {
     this.id = 0
     this.version = DATABASE_VERSION
     this.configName = configName
-    this.providerConfig = providerConfig
     this.language = language
     this.theme = theme
   }
@@ -72,17 +67,8 @@ export class ProviderConfigModel {
   @Column({ type: 'text', nullable: false })
   baseUrl: string
 
-  // 提供商 API URL
   @Column({ type: 'text', nullable: true })
-  apiUrl: string
-
-  // 提供商网站
-  @Column({ type: 'text', nullable: true })
-  websiteUrl: string
-
-  // 模型列表地址
-  @Column({ type: 'text', nullable: true })
-  modelUrl: string
+  apiKey?: string
 
   // 模型配置，以 JSON 字符串形式存储
   @Column({
@@ -95,48 +81,28 @@ export class ProviderConfigModel {
   })
   models: Model[]
 
-  // 提供商描述
-  @Column({ type: 'text', nullable: true })
-  description: string
-
-  // 支持的特性列表
-  @Column({ type: 'simple-array', nullable: true })
-  features: string[]
-
   /**
    * 提供商配置模型构造函数
    * @param providerId 提供商 ID
    * @param isInstalled 是否已安装
    * @param baseUrl 基础 URL
    * @param name 提供商名称
-   * @param description 描述信息
-   * @param apiUrl 提供商 API URL
-   * @param websiteUrl 提供商网站
-   * @param modelUrl 模型列表地址
+   * @param apiKey 提供商 API Key
    * @param models 支持的模型列表
-   * @param features 支持的特性列表
    */
   constructor(
     providerId: ProviderId,
     isInstalled: boolean,
     baseUrl: string,
     name: string,
-    description: string,
-    apiUrl: string,
-    websiteUrl: string,
-    modelUrl: string,
     models: Model[],
-    features: string[]
+    apiKey?: string
   ) {
     this.id = providerId
     this.isInstalled = isInstalled
     this.baseUrl = baseUrl
     this.name = name
-    this.description = description
-    this.apiUrl = apiUrl
-    this.websiteUrl = websiteUrl
-    this.modelUrl = modelUrl
+    this.apiKey = apiKey
     this.models = models
-    this.features = features
   }
 }

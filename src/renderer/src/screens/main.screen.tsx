@@ -10,12 +10,14 @@ import {
   MessageContent
 } from '@/components/ui/message'
 import { ScrollButton } from '@/components/ui/scroll-button'
+import { transformProviderConfig } from '@/lib/transform'
 import { cn } from '@/lib/utils'
 import { chat } from '@/services/chat'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { Copy } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
 
 interface ChatMessage {
   id: number
@@ -26,7 +28,7 @@ interface ChatMessage {
 function MainScreen(): React.ReactElement {
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
-  const { settings, setSettings } = useSettingsStore()
+  const { setSettings, setUserProviderConfigs } = useSettingsStore()
 
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -126,11 +128,13 @@ function MainScreen(): React.ReactElement {
       .then((settings) => {
         console.log('Settings fetched:', settings)
         if (settings) {
+          const transformedSettings = transformProviderConfig(settings.SYSTEM_PROVIDERS)
           setSettings(settings)
+          setUserProviderConfigs(transformedSettings)
         }
       })
       .catch((error) => {
-        console.error('Failed to fetch settings:', error)
+        toast.error('Failed to fetch settings:', error)
       })
   }, [])
 

@@ -8,7 +8,7 @@ let providerService: ProviderService | null = null
 
 export async function registerIpc(mainWindow: BrowserWindow, app: App) {
   logger.info('registerIpc')
-  settingsService = new SettingsService(mainWindow)
+  settingsService = new SettingsService(mainWindow, providerService)
   providerService = new ProviderService(mainWindow)
 
   // 初始化 db:settings 数据

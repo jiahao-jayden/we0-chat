@@ -4,22 +4,28 @@ import logger from '~/lib/logger'
 import { SettingModel } from '~/shared/model'
 import type { Setting } from '~/shared/types/settings'
 import { BaseService } from './base-service'
+import type { ProviderService } from './provider-service'
 
 const defaultSetting: Omit<Setting, 'id'> = {
   configName: 'default',
   version: DATABASE_VERSION,
-  providerConfig: ['silicon'],
   language: 'zh',
   theme: 'light'
 }
 
 export class SettingsService extends BaseService {
-  private static instance: SettingsService | null = null
   private ipcHandlerRegistered: boolean = false
+  private providerService: ProviderService
 
-  constructor(mainWindow: BrowserWindow) {
+  constructor(mainWindow: BrowserWindow, providerService: ProviderService) {
     super(mainWindow)
     this.registerIpcHandlers()
+    this.providerService = providerService
+  }
+
+  private async transformSetting(setting: SettingModel) {
+    const providers = await this.providerService.getAllProviders()
+    return { ...setting, providers }
   }
 
   private registerIpcHandlers() {
@@ -36,7 +42,7 @@ export class SettingsService extends BaseService {
             logger.warn(`Settings not found for config: ${configName}`)
             return null
           }
-          return setting
+          return this.transformSetting(setting)
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : String(error)
           logger.error(`Error getting settings: ${errorMessage}`)
@@ -62,12 +68,7 @@ export class SettingsService extends BaseService {
       const setting = await this.findAll(SettingModel)
       if (setting.length === 0) {
         await this.create(
-          new SettingModel(
-            defaultSetting.configName,
-            defaultSetting.providerConfig,
-            defaultSetting.language,
-            defaultSetting.theme
-          )
+          new SettingModel(defaultSetting.configName, defaultSetting.language, defaultSetting.theme)
         )
         logger.info(`Created default settings`)
       }
