@@ -1,15 +1,6 @@
-import type { ProviderId } from './provider'
+import type { SettingModel } from '../model'
 
-export type ModelConfig = {
-  provider: ProviderId
-  config: {
-    model: string
-    apiKey: string
-    isOpen: boolean
-  }
-  isOpen: boolean
-  baseUrl: string
-}
+export type Setting = SettingModel
 
 export type Theme = 'light' | 'dark' | 'system'
 

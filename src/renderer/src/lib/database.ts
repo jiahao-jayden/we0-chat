@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/sqlite-proxy'
-import * as schema from '../../../shared/schema'
+import * as schema from '../../../shared/model'
 
 export const database = drizzle(
   async (...args) => {

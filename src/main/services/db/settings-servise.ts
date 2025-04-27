@@ -1,40 +1,89 @@
-import type { ModelConfig } from '~/shared/types/settings'
-import { BaseService } from './base-service'
-import { SettingModel } from '~/shared/schema'
 import { ipcMain, type BrowserWindow } from 'electron'
+import { DATABASE_VERSION } from '~/shared/appInfo/app-info'
+import logger from '~/lib/logger'
+import { SettingModel } from '~/shared/model'
+import type { Setting } from '~/shared/types/settings'
+import { BaseService } from './base-service'
 
-const defaultConfig: ModelConfig[] = [
-  {
-    provider: 'silicon',
-    config: {
-      model: 'deepseek-ai/DeepSeek-R1',
-      apiKey: '',
-      isOpen: false
-    },
-    isOpen: false,
-    baseUrl: ''
-  }
-]
+const defaultSetting: Omit<Setting, 'id'> = {
+  configName: 'default',
+  version: DATABASE_VERSION,
+  providerConfig: ['silicon'],
+  language: 'zh',
+  theme: 'light'
+}
 
 export class SettingsService extends BaseService {
+  private static instance: SettingsService | null = null
+  private ipcHandlerRegistered: boolean = false
+
   constructor(mainWindow: BrowserWindow) {
     super(mainWindow)
+    this.registerIpcHandlers()
+  }
+
+  private registerIpcHandlers() {
+    if (this.ipcHandlerRegistered) {
+      return
+    }
+
+    try {
+      ipcMain.handle('db:get-settings', async (_, configName: string) => {
+        try {
+          logger.info(`Getting settings for config: ${configName}`)
+          const setting = await this.findOne(SettingModel, { configName })
+          if (!setting) {
+            logger.warn(`Settings not found for config: ${configName}`)
+            return null
+          }
+          return setting
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error)
+          logger.error(`Error getting settings: ${errorMessage}`)
+          throw error
+        }
+      })
+
+      this.ipcHandlerRegistered = true
+      logger.info('IPC handlers registered for settings service')
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      logger.error(`Failed to register IPC handlers: ${errorMessage}`)
+      throw error
+    }
   }
 
   async init() {
-    await super.ensureConnection()
-    // 检查用户存不存在配置，不存在就新建
-    const setting = await this.findOne(SettingModel, { configName: 'default' })
-    if (!setting) {
-      await this.create(new SettingModel('default', defaultConfig, 'zh', 'light'))
-    }
-    // 通知渲染进程去存储和同步
-    this.mainWindow.webContents.send('db:settings-updated', setting)
+    try {
+      await super.ensureConnection()
+      logger.info(`Initializing settings`)
 
-    // 获取配置
-    ipcMain.handle('db:get-settings', async (_, configName: string) => {
-      const setting = await this.findOne(SettingModel, { configName })
-      return setting
-    })
+      // 检查用户存不存在配置，不存在就新建
+      const setting = await this.findAll(SettingModel)
+      if (setting.length === 0) {
+        await this.create(
+          new SettingModel(
+            defaultSetting.configName,
+            defaultSetting.providerConfig,
+            defaultSetting.language,
+            defaultSetting.theme
+          )
+        )
+        logger.info(`Created default settings`)
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      logger.error(`Failed to initialize settings: ${errorMessage}`)
+      throw error
+    }
+  }
+
+  async cleanup() {
+    if (this.ipcHandlerRegistered) {
+      ipcMain.removeHandler('db:get-settings')
+      this.ipcHandlerRegistered = false
+      logger.info('IPC handlers removed for settings service')
+    }
+    await super.cleanup()
   }
 }

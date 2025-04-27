@@ -1,6 +1,6 @@
 {
   "files": [],
-  "include": ["src/shared/schema/**/*","src/shared/types/**/*" ],
+  "include": ["src/shared/model/**/*","src/shared/types/**/*" ],
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",

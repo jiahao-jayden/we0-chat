@@ -6,9 +6,9 @@
     "src/renderer/src/**/*.tsx",
     "src/preload/*.d.ts",
     "src/lib",
-    "src/shared/schema",
+    "src/shared/model",
     "src/shared/types/**/*"
-  ],
+, "src/shared/appInfo/app-info.ts"  ],
   "compilerOptions": {
     "composite": true,
     "jsx": "react-jsx",

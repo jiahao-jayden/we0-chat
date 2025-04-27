@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/form'
 import { PROVIDERS } from '@/constant/providers'
 import { cn } from '@/lib/utils'
-import type { LLMProvider } from '~/shared/types/provider'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { OpenAI } from '@lobehub/icons'
 import { ChevronDown, ChevronRight, Link, Plus, PlusCircle, Settings2 } from 'lucide-react'
@@ -20,8 +19,17 @@ import { Button } from '../ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '../ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Input } from '../ui/input'
+import { useSettingsStore } from '@/stores/settingsStore'
 
 export function SettingsPanel() {
+  const { settings } = useSettingsStore()
+  console.log(settings)
+
+  /**
+   * 未安装的卡片
+   * @param provider
+   * @returns
+   */
   const UninstalledCard = ({ provider }: { provider: LLMProvider }) => {
     return (
       <div className="relative group">
@@ -46,6 +54,11 @@ export function SettingsPanel() {
     )
   }
 
+  /**
+   * 已安装的卡片
+   * @param provider
+   * @returns
+   */
   const InstalledCard = ({ provider }: { provider: LLMProvider }) => {
     const [isExpanded, setIsExpanded] = useState(false)
     const [openEditDialog, setOpenEditDialog] = useState(false)
@@ -207,8 +220,6 @@ export function SettingsPanel() {
   const providerList = Object.values(PROVIDERS)
   return (
     <div className="space-y-8 text-sm">
-      <div className="w-[160px] h-20 bg-amber-500"></div>
-      <div className="h-20 bg-amber-500" style={{ width: '160px' }}></div>
       {/* 用户的配置 */}
       <div className="space-y-2">
         <p className="text-sm font-bold">Providers</p>

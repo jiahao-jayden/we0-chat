@@ -12,6 +12,7 @@ import {
 import { ScrollButton } from '@/components/ui/scroll-button'
 import { cn } from '@/lib/utils'
 import { chat } from '@/services/chat'
+import { useSettingsStore } from '@/stores/settingsStore'
 import { Copy } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
@@ -25,6 +26,8 @@ interface ChatMessage {
 function MainScreen(): React.ReactElement {
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const { settings, setSettings } = useSettingsStore()
+
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 1,
@@ -104,6 +107,7 @@ function MainScreen(): React.ReactElement {
       ])
     }
   }
+
   // const onSend = () => {
   //   window.electron.ipcRenderer.send('create-message', {
   //     winViewId: 2,
@@ -116,10 +120,18 @@ function MainScreen(): React.ReactElement {
   // }
 
   useEffect(() => {
-    // onSend()
-    // window.electron.ipcRenderer.on('update-messages', (_event, data) => {
-    //   console.log('update-messages', data)
-    // })
+    // 主动获取设置
+    window.api
+      .invoke('db:get-settings', 'default')
+      .then((settings) => {
+        console.log('Settings fetched:', settings)
+        if (settings) {
+          setSettings(settings)
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to fetch settings:', error)
+      })
   }, [])
 
   return (

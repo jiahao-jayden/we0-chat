@@ -1,19 +1,25 @@
-export type LLMProvider = {
-  id: ProviderId
+import type { ProviderConfigModel } from '../model'
+
+/**
+ * 模型提供商
+ */
+export type ProviderConfig = ProviderConfigModel
+
+/**
+ * 模型
+ */
+export type Model = {
   name: string
-  description: string
-  apiUrl: string
-  website: string
-  logo: React.ReactNode
-  modelUrl: string
-  features: string[]
-  models: ProviderModel[]
+  iconId: IconId
+  isOpen: boolean
 }
 
-export type ProviderModel = {
-  name: string
-  iconId: string
-  description?: string
-}
+/**
+ * 模型图标Id
+ */
+export type IconId = 'deepseek-v3'
 
+/**
+ * 提供商Id
+ */
 export type ProviderId = 'openrouter' | 'silicon'

@@ -3,7 +3,7 @@ import { app } from 'electron'
 import path from 'path'
 import { DataSource } from 'typeorm'
 import { BetterSqlite3ConnectionOptions } from 'typeorm/driver/better-sqlite3/BetterSqlite3ConnectionOptions'
-import { SettingModel } from '~/shared/schema'
+import { ProviderConfigModel, SettingModel } from '~/shared/model'
 
 const DATABASE_NAME = 'we0Chat'
 export class DataBase {
@@ -19,7 +19,7 @@ export class DataBase {
 
     const options: BetterSqlite3ConnectionOptions = {
       type: 'better-sqlite3',
-      entities: [SettingModel],
+      entities: [SettingModel, ProviderConfigModel],
       database: basePath,
       synchronize: true
     }

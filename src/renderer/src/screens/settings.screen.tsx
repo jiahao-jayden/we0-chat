@@ -2,6 +2,7 @@ import { SettingsPanel } from '@/components/Settings/provider-panel'
 import { Button } from '@/components/ui/button'
 import { SIDEBAR_WIDTH } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
+import { useSettingsStore } from '@/stores/settingsStore'
 import { Cloud, User } from 'lucide-react'
 import { useState } from 'react'
 
@@ -21,7 +22,7 @@ const SETTINGS_ITEMS: { id: SettingsItemType; icon: React.ReactNode; label: stri
 ]
 export default function SettingsScreen() {
   const [selectedItem, setSelectedItem] = useState<SettingsItemType>('provider')
-  const ItemButton = ({
+  const SidebarItemButton = ({
     children,
     id,
     ...props
@@ -55,10 +56,10 @@ export default function SettingsScreen() {
         style={{ width: SIDEBAR_WIDTH }}
       >
         {SETTINGS_ITEMS.map((item) => (
-          <ItemButton key={item.id} id={item.id} onClick={() => setSelectedItem(item.id)}>
+          <SidebarItemButton key={item.id} id={item.id} onClick={() => setSelectedItem(item.id)}>
             {item.icon}
             {item.label}
-          </ItemButton>
+          </SidebarItemButton>
         ))}
       </div>
       {/* content */}
